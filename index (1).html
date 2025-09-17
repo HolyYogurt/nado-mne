@@ -1,0 +1,385 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Культура и наука России конца XIX – начала XX века</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.4.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.4.0/theme/beige.min.css">
+    <style>
+        .reveal {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5dc; /* Мягкий бежевый фон */
+        }
+        .reveal h1, .reveal h2, .reveal h3 {
+            color: #556b2f; /* Тёмно-оливковый для заголовков */
+        }
+        .reveal ul {
+            font-size: 0.8em;
+            line-height: 1.5;
+            color: #696969; /* Тёмно-серый для текста */
+        }
+        .reveal p {
+            font-size: 0.8em;
+            color: #696969;
+        }
+        .reveal img {
+            max-height: 150px; /* Компактный размер */
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+        .reveal .two-columns {
+            display: flex;
+            justify-content: space-between;
+        }
+        .reveal .two-columns div {
+            width: 45%;
+        }
+        .reveal .images {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Slide 1: Title -->
+            <section>
+                <h1>Культура и наука России</h1>
+                <h3>Конец XIX – начала XX века</h3>
+                <p>Презентация</p>
+                <p>17 сентября 2025 г.</p>
+            </section>
+
+            <!-- Slide 2: Introduction -->
+            <section>
+                <h2>Введение</h2>
+                <div class="two-columns">
+                    <div>
+                        <p>Конец XIX – начало XX века – эпоха расцвета русской культуры, известная как «Серебряный век».</p>
+                        <ul>
+                            <li>Период характеризуется сочетанием традиций и новаторства.</li>
+                            <li>Культурный подъем на фоне социальных и политических изменений.</li>
+                            <li>Наука сделала значительный вклад в мировые открытия.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <ul>
+                            <li>Рост интеллигенции и образовательных учреждений.</li>
+                            <li>Влияние европейских течений: от реализма до модернизма.</li>
+                            <li>Русская культура оказала влияние на мировую сцену.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="images">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Tretyakov_Gallery_by_Karl_Fischer_1898.jpg/800px-Tretyakov_Gallery_by_Karl_Fischer_1898.jpg" alt="Третьяковская галерея" onerror="console.error('Failed to load Tretyakov Gallery image')">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/New_hermitage_interior.jpg/800px-New_hermitage_interior.jpg" alt="Эрмитаж" onerror="console.error('Failed to load Hermitage image')">
+                </div>
+            </section>
+
+            <!-- Slide 3: Cultural Context -->
+            <section>
+                <h2>Культурный контекст</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3>Социально-политические изменения</h3>
+                        <ul>
+                            <li>Отмена крепостного права (1861) привела к росту городской культуры.</li>
+                            <li>Индустриализация: развитие городов, железных дорог, фабрик.</li>
+                            <li>Революция 1905 года усилила общественные дебаты.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Культурные сдвиги</h3>
+                        <ul>
+                            <li>Переход от реализма к символизму, модерну, авангарду.</li>
+                            <li>Рост числа театров, галерей, литературных журналов.</li>
+                            <li>Развитие интереса к искусству и науке.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="images">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Emancipation_of_the_serfs_in_1861.jpg/800px-Emancipation_of_the_serfs_in_1861.jpg" alt="Отмена крепостного права 1861" onerror="console.error('Failed to load Emancipation 1861 image')">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/The_Russian_Revolution%2C_1905_Q81555.jpg/800px-The_Russian_Revolution%2C_1905_Q81555.jpg" alt="Революция 1905" onerror="console.error('Failed to load Revolution 1905 image')">
+                </div>
+            </section>
+
+            <!-- Slide 4: Literature - Silver Age -->
+            <section>
+                <h2>Литература: Серебряный век</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3>Поэзия</h3>
+                        <ul>
+                            <li><strong>Символизм</strong>: Александр Блок («Стихи о Прекрасной Даме»), Андрей Белый.</li>
+                            <li><strong>Акмеизм</strong>: Анна Ахматова, Николай Гумилёв – ясность и точность.</li>
+                            <li><strong>Футуризм</strong>: Владимир Маяковский – эксперименты с формой.</li>
+                            <li>Темы: духовные искания, любовь, революция.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Проза</h3>
+                        <ul>
+                            <li>Антон Чехов: новеллы и пьесы («Вишнёвый сад», «Чайка»).</li>
+                            <li>Максим Горький: социальная проблематика («На дне»).</li>
+                            <li>Иван Бунин: лирическая проза, Нобелевская премия (1933).</li>
+                            <li>Журналы: «Весы», «Аполлон».</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="images">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Alexander_Blok.jpeg/800px-Alexander_Blok.jpeg" alt="Александр Блок" onerror="console.error('Failed to load Alexander Blok image')">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Kuzma_Petrov-Vodkin._Portrait_of_Anna_Akhmatova._1922.jpg/800px-Kuzma_Petrov-Vodkin._Portrait_of_Anna_Akhmatova._1922.jpg" alt="Анна Ахматова" onerror="console.error('Failed to load Anna Akhmatova image')">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/1918._Vladimir_Mayakovsky._A_self-portrait._Yellow_jacket.jpg/800px-1918._Vladimir_Mayakovsky._A_self-portrait._Yellow_jacket.jpg" alt="Владимир Маяковский" onerror="console.error('Failed to load Vladimir Mayakovsky image')">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Anton_Chekhov_1889.jpg/800px-Anton_Chekhov_1889.jpg" alt="Антон Чехов" onerror="console.error('Failed to load Anton Chekhov image')">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Akseli_Gallen-Kallela_-_Portrait_of_Maxim_Gorky.jpg/800px-Akseli_Gallen-Kallela_-_Portrait_of_Maxim_Gorky.jpg" alt="Максим Горький" onerror="console.error('Failed to load Maxim Gorky image')">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Bunin_Ivan_1937.jpg/800px-Bunin_Ivan_1937.jpg" alt="Иван Бунин" onerror="console.error('Failed to load Ivan Bunin image')">
+                </div>
+            </section>
+
+            <!-- Slide 5: Visual Arts -->
+            <section>
+                <h2>Изобразительное искусство</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3>Реализм и передвижники</h3>
+                        <ul>
+                            <li>Илья Репин: «Бурлаки на Волге», исторические полотна.</li>
+                            <li>Василий Суриков: «Утро стрелецкой казни».</li>
+                            <li>Товарищество передвижных выставок – искусство для народа.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Авангард и модерн</h3>
+                        <ul>
+                            <li>Казимир Малевич: супрематизм («Чёрный квадрат», 1915).</li>
+                            <li>Василий Кандинский: абстракционизм, духовность.</li>
+                            <li>«Мир искусства»: Александр Бенуа, Леон Бакст.</li>
+                            <li>Влияние импрессионизма и европейского авангарда.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="images">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/REPIN_portret_REPIN.jpg/800px-REPIN_portret_REPIN.jpg" alt="Илья Репин" onerror="console.error('Failed to load Ilya Repin image')">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Portrait_of_the_Artist_Vasily_Surikov.jpg/800px-Portrait_of_the_Artist_Vasily_Surikov.jpg" alt="Василий Суриков" onerror="console.error('Failed to load Vasily Surikov image')">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Self-Portrait_%281908_or_1910-1911%29_%28Kazimir_Malevich%29.jpg/800px-Self-Portrait_%281908_or_1910-1911%29_%28Kazimir_Malevich%29.jpg" alt="Казимир Малевич" onerror="console.error('Failed to load Kazimir Malevich image')">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Vassily-Kandinsky.jpeg/800px-Vassily-Kandinsky.jpeg" alt="Василий Кандинский" onerror="console.error('Failed to load Vasily Kandinsky image')">
+                </div>
+            </section>
+
+            <!-- Slide 6: Music and Theater -->
+            <section>
+                <h2>Музыка и театр</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3>Музыка</h3>
+                        <ul>
+                            <li>Пётр Чайковский: оперы («Евгений Онегин»), балеты («Лебединое озеро»).</li>
+                            <li>«Могучая кучка»: Николай Римский-Корсаков, Модест Мусоргский.</li>
+                            <li>Сергей Рахманинов: романтические концерты.</li>
+                            <li>Русские сезоны Сергея Дягилева.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Театр</h3>
+                        <ul>
+                            <li>МХТ: Константин Станиславский и Немирович-Данченко.</li>
+                            <li>Система Станиславского: реализм в игре.</li>
+                            <li>Пьесы Чехова («Три сестры», «Вишнёвый сад»).</li>
+                            <li>Эксперименты: Всеволод Мейерхольд.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="images">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Pyotr_Ilyich_Tchaikovsky.jpg/800px-Pyotr_Ilyich_Tchaikovsky.jpg" alt="Пётр Чайковский" onerror="console.error('Failed to load Pyotr Tchaikovsky image')">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Nikolai_A._Rimsky-Korsakov.jpg/800px-Nikolai_A._Rimsky-Korsakov.jpg" alt="Николай Римский-Корсаков" onerror="console.error('Failed to load Nikolai Rimsky-Korsakov image')">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Sergei_Rachmaninoff_cph.3a40575.jpg/800px-Sergei_Rachmaninoff_cph.3a40575.jpg" alt="Сергей Рахманинов" onerror="console.error('Failed to load Sergei Rachmaninoff image')">
+                </div>
+            </section>
+
+            <!-- Slide 7: Science and Technology -->
+            <section>
+                <h2>Наука и технологии</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3>Естественные науки</h3>
+                        <ul>
+                            <li>Дмитрий Менделеев: периодическая таблица (1869).</li>
+                            <li>Иван Павлов: условные рефлексы, Нобелевская премия (1904).</li>
+                            <li>Владимир Вернадский: биогеохимия, ноосфера.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Технические достижения</h3>
+                        <ul>
+                            <li>Александр Попов: изобретение радио (1895).</li>
+                            <li>Транссибирская магистраль (1891–1916).</li>
+                            <li>Электрификация городов.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="images">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/1861._%D0%9F%D0%BE%D1%80%D1%82%D1%80%D0%B5%D1%82_%D0%94.%D0%98._%D0%9C%D0%B5%D0%BD%D0%B4%D0%B5%D0%BB%D0%B5%D0%B5%D0%B2%D0%B0.jpg/800px-1861._%D0%9F%D0%BE%D1%80%D1%82%D1%80%D0%B5%D1%82_%D0%94.%D0%98._%D0%9C%D0%B5%D0%BD%D0%B4%D0%B5%D0%BB%D0%B5%D0%B5%D0%B2%D0%B0.jpg" alt="Дмитрий Менделеев" onerror="console.error('Failed to load Dmitry Mendeleev image')">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Ivan_Pavlov_by_M.Nesterov_%281930%29.jpg/800px-Ivan_Pavlov_by_M.Nesterov_%281930%29.jpg" alt="Иван Павлов" onerror="console.error('Failed to load Ivan Pavlov image')">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Alexander_Popov_portrait.jpg/800px-Alexander_Popov_portrait.jpg" alt="Александр Попов" onerror="console.error('Failed to load Alexander Popov image')">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Vernadsky_V.I.jpg/800px-Vernadsky_V.I.jpg" alt="Владимир Вернадский" onerror="console.error('Failed to load Vladimir Vernadsky image')">
+                </div>
+            </section>
+
+            <!-- Slide 8: Education and Intellectual Life -->
+            <section>
+                <h2>Образование и интеллектуальная жизнь</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3>Образование</h3>
+                        <ul>
+                            <li>Рост числа университетов: Московский, Санкт-Петербургский.</li>
+                            <li>Женское образование: Софья Ковалевская – первая женщина-математик.</li>
+                            <li>Русское географическое общество.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Философия и публицистика</h3>
+                        <ul>
+                            <li>Владимир Соловьёв: философия «всеединства».</li>
+                            <li>Николай Бердяев: свобода и предназначение.</li>
+                            <li>Дебаты: западники vs. славянофилы.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="images">
+                    <img crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Sofia_Kovalevskaya.jpg/800px-Sofia_Kovalevskaya.jpg" alt="Софья Ковалевская" onerror="console.error('Failed to load Sofia Kovalevskaya image')">
+                </div>
+            </section>
+
+            <!-- Slide 9: Challenges and Contradictions -->
+            <section>
+                <h2>Вызовы и противоречия</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3>Политические ограничения</h3>
+                        <ul>
+                            <li>Цензура ограничивала свободу слова.</li>
+                            <li>Революционные движения: забастовки, восстания.</li>
+                            <li>Репрессии против интеллигенции.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Социальные проблемы</h3>
+                        <ul>
+                            <li>Социальное неравенство: бедность крестьян.</li>
+                            <li>Конфликт традиций и модернизации.</li>
+                            <li>Эмиграция после революции 1905 года.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 10: Global Influence -->
+            <section>
+                <h2>Мировое влияние</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3>Культурный экспорт</h3>
+                        <ul>
+                            <li>Русские сезоны Дягилева: балет в Париже.</li>
+                            <li>Выставки русского искусства в Европе.</li>
+                            <li>Переводы Чехова и Горького.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Научный вклад</h3>
+                        <ul>
+                            <li>Менделеев: основа химии.</li>
+                            <li>Павлов: психология и физиология.</li>
+                            <li>Признание русских учёных.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 11: Conclusion -->
+            <section>
+                <h2>Заключение</h2>
+                <ul>
+                    <li>Эпоха культурного и научного подъёма России.</li>
+                    <li>Сочетание традиций и новаторства.</li>
+                    <li>Глубокое влияние на мировую цивилизацию.</li>
+                    <li>Достижения продолжают вдохновлять.</li>
+                </ul>
+            </section>
+
+            <!-- Slide 12: Thank You -->
+            <section>
+                <h2>Спасибо за внимание!</h2>
+                <p style="text-align: center;">Вопросы?</p>
+            </section>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.4.0/reveal.min.js"></script>
+    <script>
+        try {
+            Reveal.initialize({
+                hash: true,
+                transition: 'fade',
+                slideNumber: true,
+                backgroundTransition: 'fade',
+                width: 960,
+                height: 700
+            });
+            console.log("Reveal.js initialized successfully!");
+            // Проверка загрузки изображений
+            document.querySelectorAll('img').forEach(img => {
+                img.addEventListener('load', () => console.log(`Image loaded: ${img.alt}`));
+                img.addEventListener('error', () => console.error(`Failed to load image: ${img.alt}`));
+            });
+        } catch (e) {
+            console.error("Failed to initialize Reveal.js: ", e);
+        }
+    </script>
+</body>
+</html>
